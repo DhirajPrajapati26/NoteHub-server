@@ -33,18 +33,18 @@ export const signup = async (req, res) => {
       },
     );
 
-    // res.cookie("token", token, {
-    //   httpOnly: true,
-    //   secure: true,
-    //   sameSite: "none",
-    //   maxAge: 3600000,
-    // });
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       maxAge: 3600000,
     });
+    // res.cookie("token", token, {
+    //   httpOnly: true,
+    //   secure: false,
+    //   sameSite: "lax",
+    //   maxAge: 3600000,
+    // });
 
     res.json({ message: "User registered successfully", email: user.email });
     // console.log(user)
@@ -79,18 +79,18 @@ export const login = async (req, res) => {
       },
     );
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-      maxAge: 3600000,
-    });
     // res.cookie("token", token, {
     //   httpOnly: true,
-    //   secure: true,
-    //   sameSite: "none",
+    //   secure: false,
+    //   sameSite: "lax",
     //   maxAge: 3600000,
     // });
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 3600000,
+    });
     res.json({ message: "Logged in successfully" });
   } catch (error) {
     console.log(error);
