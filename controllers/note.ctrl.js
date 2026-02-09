@@ -3,9 +3,14 @@ import Note from "../models/Note.js";
 // Create note
 export const createNote = async (req, res) => {
   try {
-    const note = await Note.create(req.body);
-    res.json(note);
-    // console.log(note)
+    const { title, content } = req.body;
+    const note = await Note.create({
+      title,
+      content,
+      userId: req.user.id,
+    });
+    res.status(201).json(note);
+    console.log(note);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -15,8 +20,11 @@ export const createNote = async (req, res) => {
 
 export const getNotes = async (req, res) => {
   try {
-    const notes = await Note.find().sort({ pinned: -1, createdAt: -1 });
-    res.json(notes);
+    const notes = await Note.find({ userId: req.user.id }).sort({
+      pinned: -1,
+      createdAt: -1,
+    });
+    res.status(200).json(notes);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -37,14 +45,14 @@ export const deleteNote = async (req, res) => {
 
 export const editNote = async (req, res) => {
   try {
-  const note = await Note.findByIdAndUpdate(req.params.id, req.body, {
+    const note = await Note.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
 
-    if(!note) return res.status(404).json({message:"Note not found"})
+    if (!note) return res.status(404).json({ message: "Note not found" });
     res.json(note);
   } catch (error) {
-     res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 

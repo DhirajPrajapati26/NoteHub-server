@@ -2,7 +2,6 @@ import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 
-
 // signup
 
 export const signup = async (req, res) => {
@@ -26,14 +25,24 @@ export const signup = async (req, res) => {
 
     await user.save();
 
-    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { email: user.email, id: user._id },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      },
+    );
 
+    // res.cookie("token", token, {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: "none",
+    //   maxAge: 3600000,
+    // });
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: false,
+      sameSite: "lax",
       maxAge: 3600000,
     });
 
@@ -58,20 +67,30 @@ export const login = async (req, res) => {
     const user = await User.findOne({ email });
     // if (!user) return res.status(400).json({ message: "Invalid credentials" })
     if (!user) return res.status(400).json({ message: "Incorect email" });
-
+    console.log(user);
     const ok = await bcrypt.compare(password, user.password);
     if (!ok) return res.status(400).json({ message: "Incorrect password" });
 
-    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { email: user.email, id: user._id },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      },
+    );
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: false,
+      sameSite: "lax",
       maxAge: 3600000,
     });
+    // res.cookie("token", token, {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: "none",
+    //   maxAge: 3600000,
+    // });
     res.json({ message: "Logged in successfully" });
   } catch (error) {
     console.log(error);
@@ -91,7 +110,6 @@ export const logout = async (req, res) => {
 };
 
 export const getMe = async (req, res) => {
- 
   const user = await User.findOne({ email: req.user.email }).select(
     "-password",
   );
