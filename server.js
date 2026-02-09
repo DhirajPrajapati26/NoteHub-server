@@ -22,7 +22,11 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://notehub-phi.vercel.app"],
+    origin: [
+      "http://localhost:5173",
+      "https://notehub-phi.vercel.app",
+      "https://notehub.dhirajprajapati.in",
+    ],
     credentials: true,
   }),
 );
