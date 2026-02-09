@@ -34,6 +34,10 @@ app.use(
 //   }),
 // );
 
+app.get("/", (req, res) => {
+  res.send("Backend is Live");
+});
+
 app.use("/api/notes", noteRoutes);
 app.use("/api/auth", authRoutes);
 
