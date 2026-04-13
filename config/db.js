@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
 
 const connectDB = () => {
-  // console.log("URL =>", pwrocess.env.MONGO_URL);
+  console.log("URL =>", process.env.MONGO_URL);
 
   mongoose
     .connect(process.env.MONGO_URL)
     .then((res) => {
       console.log(`Database connected successfully`);
     })
-    .catch((err) => console.log("Error connecting database",err))
+    .catch((err) => console.log("Error connecting database",err.message))
     .finally(()=>{
         console.log("DB Process completed")
     })
